@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="./h-form.css">
+
+  <!-- 一个下拉框插件，演示用 -->
+  <link rel="stylesheet" type="text/css" href="./lib/hselector/hselector.css">
+  <script src="./lib/hselector/hselector.js"></script>
+</head>
+<body>
+	<div class="tmp">
+
+      <form class="h-form" id="test">
+        <div class="h-form-item" prop="email">
+          <label class="h-form-item--label">邮箱</label>
+          <div class="h-form-item--content">
+            <div class="h-input">
+              <input class="h-input--inner" type="" name="">
+            </div>
+          </div>
+        </div>
+        
+        <div class="h-form-item" prop="phone">
+          <label class="h-form-item--label">手机</label>
+          <div class="h-form-item--content">
+            <div class="h-input">
+              <input class="h-input--inner" type="" name="">
+            </div>
+          </div>
+        </div>
+
+        <div class="h-form-item" prop="fruit">
+          <label class="h-form-item--label">水果</label>
+          <div class="h-form-item--content">
+            <div class="h-input">
+              <input class="h-input--inner" id="m-selector" readonly="readonly" type="" name="">
+            </div>
+          </div>
+        </div>
+
+        <div class="h-form-item" prop="name">
+          <label class="h-form-item--label">用户名</label>
+          <div class="h-form-item--content">
+            <div class="h-input">
+              <input class="h-input--inner" type="" name="">
+            </div>
+          </div>
+        </div>
+
+        <div class="h-form-item" prop="pass">
+          <label class="h-form-item--label">密码</label>
+          <div class="h-form-item--content">
+            <div class="h-input">
+              <input class="h-input--inner" type="">
+            </div>
+          </div>
+        </div>
+
+        <div class="h-form-item" prop="repass">
+          <label class="h-form-item--label">确认密码</label>
+          <div class="h-form-item--content">
+            <div class="h-input">
+              <input class="h-input--inner" type="">
+            </div>
+          </div>
+        </div>
+
+        <div class="h-form-item" prop="cardtype">
+          <label class="h-form-item--label">证件类型</label>
+          <div class="h-form-item--content">
+            <div class="h-input">
+              <input class="h-input--inner" id="m-selector2" readonly="readonly" type="" name="">
+            </div>
+          </div>
+        </div>
+
+        <div class="h-form-item" prop="identity">
+          <label class="h-form-item--label">证件号码</label>
+          <div class="h-form-item--content">
+            <div class="h-input">
+              <input class="h-input--inner" type="" placeholder="请输入 'sfz' 或 'passport' 或 'hk' 用于测试">
+            </div>
+          </div>
+        </div>
+
+        <div class="h-form-item" prop="hobby">
+          <label class="h-form-item--label">喜好</label>
+          <div class="h-form-item--content">
+            <div class="h-checkbox-group">
+              <label class="h-checkbox">
+                <input type="checkbox" value="male" class="h-checkbox--originput">
+                <span class="h-checkbox--input"></span>
+                <span class="h-checkbox--label">男</span>
+              </label>
+              <label class="h-checkbox">
+                <input type="checkbox" value="female" class="h-checkbox--originput">
+                <span class="h-checkbox--input"></span>
+                <span class="h-checkbox--label">女</span>
+              </label>
+              <label class="h-checkbox">
+                <input type="checkbox" value="bitch" class="h-checkbox--originput">
+                <span class="h-checkbox--input"></span>
+                <span class="h-checkbox--label">妖</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="h-form-item" prop="sex">
+          <label class="h-form-item--label">性别</label>
+          <div class="h-form-item--content">
+            <div class="h-checkbox-group">
+              <label class="h-checkbox">
+                <input type="radio" name="sex" value="male" class="h-radio--originput">
+                <span class="h-radio--input"></span>
+                <span class="h-radio--label">男</span>
+              </label>
+              <label class="h-checkbox">
+                <input type="radio" name="sex" value="female" class="h-radio--originput">
+                <span class="h-radio--input"></span>
+                <span class="h-radio--label">女</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="h-form-item">
+          <div class="h-form-item--content">
+            <button type="button" class="h-button h-button-primary" id="submit">提交</button>
+            <button type="button" class="h-button" id="reset">重置</button>
+            <button type="button" class="h-button" id="setvalue">赋值</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+
+<script src="./h-form.js"></script>
+<script type="text/javascript">
+
+  /*----------初始化表单------------*/
+  var checkpass = function(value) {
+    //this 为对应的 ValidForm 实例
+    if(value === this.pass) return true;
+    return false;
+  }
+  var checkIdentity = function(value) {
+    if(this.cardtype === '身份证') {
+      if(value === 'sfz') return true;
+    }else if(this.cardtype === '护照') {
+      if(value === 'passport') return true;
+    }else if(this.cardtype === '港澳居民证') {
+      if(value === 'hk') return true;
+    }
+    return false;
+  }
+  var data = {
+    email: '',
+    phone: '',
+    fruit: '',
+    name: '',
+    cardtype: '',
+    identity: '',
+    pass: '',
+    repass: '',
+    hobby: '',
+    sex: ''
+  }
+  var rules = {
+    email: [
+      { required: true, message: '请输入邮箱' },
+      { email: true, message: '请输入正确的邮箱', trigger: 'input' },
+    ],
+    phone: [
+      { required: true, message: '请输入手机号' },
+      { phone: true, message: '请输入正确的手机号码' },
+    ],
+    pass: [
+      { required: true, message: '请输入密码'}
+    ],
+    repass: [
+      { validator: checkpass, message: '两次密码不一致' }
+    ],
+    identity: [
+      { required: true, message: '请输入证件号码' },
+      { validator: checkIdentity, message: '请输入正确的证件号码' }
+    ],
+    fruit: [
+      { required: true, message: '请选择水果'}
+    ],
+    hobby: [
+      { required: true, message: '请选择喜好'}
+    ],
+    sex: [
+      { required: true, message: '请选择性别'}
+    ]
+  }
+  var mForm = validForm.init('test', data, rules);
+
+  /*----------初始化下拉框------------*/
+  var data2 = [
+    { label: '苹果', value:'pg' },
+    { label: '香蕉', value:'xj' },
+    { label: '梨子', value:'lz' }
+  ];
+  hselector.init({
+      id: 'm-selector',
+      data: data2,
+      label: 'label',
+      value: 'value',
+      currentValue: data2[0],
+      clickCallback: function(value) {
+          console.log('clickCallback----', value)
+      }
+  })
+
+  var data3 = [
+    { label: '身份证', value:'identity' },
+    { label: '护照', value:'passport' },
+    { label: '港澳居民证', value:'hk' }
+  ];
+  hselector.init({
+      id: 'm-selector2',
+      data: data3,
+      label: 'label',
+      value: 'value',
+      currentValue: data3[0],
+      clickCallback: function(value) {
+          console.log('clickCallback----', value)
+      }
+  })
+
+
+  /*----------表单提交事件------------*/
+  var submit = document.getElementById('submit');
+  var reset = document.getElementById('reset');
+  var setvalue = document.getElementById('setvalue');
+
+  submit.onclick = function() {
+    mForm.validate(function(valid, data) {
+      if(valid) {
+        alert('submit success!');
+        console.log(data);
+      }else {
+        console.log('submit error');
+      }
+    })
+  }
+
+  reset.onclick = function() {
+    mForm.reset();
+  }
+
+  setvalue.onclick = function() {
+    var data = {
+      cardtype: '身份证',
+      identity: 'sfz',
+      email: 'hehe@qq.cn',
+      phone: '13112341234',
+      fruit: '苹果',
+      name : 'test',
+      pass : '123',
+      repass: '123',
+      sex : 'female',
+      hobby : ['bitch', 'female'],
+    }
+    mForm.setValue(data);
+  }
+
+
+</script>
+</body>
+</html>
