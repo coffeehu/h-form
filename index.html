@@ -142,7 +142,7 @@
 
   /*----------初始化表单------------*/
   var checkpass = function(value) {
-    //this 为对应的 ValidForm 实例
+    //this 为对应的 ValidForm 实例, this[prop] 能获得最新的 prop 数据
     if(value === this.pass) return true;
     return false;
   }
