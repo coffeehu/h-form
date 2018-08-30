@@ -31,15 +31,6 @@
           </div>
         </div>
 
-        <div class="h-form-item" prop="fruit">
-          <label class="h-form-item--label">水果</label>
-          <div class="h-form-item--content">
-            <div class="h-input">
-              <input class="h-input--inner" id="m-selector" readonly="readonly" type="" name="">
-            </div>
-          </div>
-        </div>
-
         <div class="h-form-item" prop="name">
           <label class="h-form-item--label">用户名</label>
           <div class="h-form-item--content">
@@ -151,6 +142,7 @@
 <script type="text/javascript">
 
   /*----------初始化表单------------*/
+  //自定义验证函数
   var checkpass = function(value) {
     //this 为对应的 ValidForm 实例, this[prop] 能获得最新的 prop 数据
     if(value === this.pass) return true;
@@ -166,19 +158,8 @@
     }
     return false;
   }
-  var data = {
-    email: '',
-    phone: '',
-    fruit: '',
-    name: '',
-    cardtype: '',
-    identity: '',
-    pass: '',
-    repass: '',
-    hobby: '',
-    sex: '',
-    study: ''
-  }
+
+  //表单验证规则
   var rules = {
     email: [
       { required: true, message: '请输入邮箱' },
@@ -198,9 +179,6 @@
       { required: true, message: '请输入证件号码' },
       { validator: checkIdentity, message: '请输入正确的证件号码' }
     ],
-    fruit: [
-      { required: true, message: '请选择水果'}
-    ],
     hobby: [
       { required: true, message: '请选择喜好'}
     ],
@@ -208,25 +186,17 @@
       { required: true, message: '请选择性别'}
     ]
   }
-  var mForm = validForm.init('test', data, rules);
+
+  var mForm = validForm.init('test', rules);
+
+  /* 第三个参数可以初始化赋值
+  var data = {
+    email: '123@qq.com'
+  }
+  var mForm = validForm.init('test', rules, data);
+  */
 
   /*----------初始化下拉框------------*/
-  var data2 = [
-    { label: '苹果', value:'pg' },
-    { label: '香蕉', value:'xj' },
-    { label: '梨子', value:'lz' }
-  ];
-  hselector.init({
-      id: 'm-selector',
-      data: data2,
-      label: 'label',
-      value: 'value',
-      currentValue: data2[0],
-      clickCallback: function(value) {
-          console.log('clickCallback----', value)
-      }
-  })
-
   var data3 = [
     { label: '身份证', value:'identity' },
     { label: '护照', value:'passport' },
@@ -244,7 +214,7 @@
   })
 
 
-  /*----------表单提交事件------------*/
+  /*----------表单提交、重置、赋值事件------------*/
   var submit = document.getElementById('submit');
   var reset = document.getElementById('reset');
   var setvalue = document.getElementById('setvalue');
@@ -270,7 +240,6 @@
       identity: 'sfz',
       email: 'hehe@qq.cn',
       phone: '13112341234',
-      fruit: '苹果',
       name : 'test',
       pass : '123',
       repass: '123',

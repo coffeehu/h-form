@@ -3,14 +3,32 @@ JavaScript 表单插件，设计风格仿照了 element-ui
 
 ### [在线演示](http://www.hcbook.cc/demo/h-form/index.html)
 
+## 简单使用
 ```
-// 数据格式
-var data = {
-    email: '',
-    phone: '',
-    name: ''
-}
+//Html 格式
+<form class="h-form" id="test">
+  
+  <div class="h-form-item" prop="email"> <!-- 确保有 prop 字段-->
+    <label class="h-form-item--label">邮箱</label>
+    <div class="h-form-item--content"> <!-- input 确保在 h-form-item--content 内就行，可以对 input 进行包裹 -->
+      <input class="h-input--inner" type="" name="">
+    </div>
+  </div>
 
+  <div class="h-form-item" prop="phone">
+    <label class="h-form-item--label">邮箱</label>
+    <div class="h-form-item--content">
+      <input class="h-input--inner" type="" name="">
+    </div>
+  </div>
+
+
+</form>
+
+
+```
+
+```
 // 验证规则
 var rules = {
     email: [
@@ -24,8 +42,8 @@ var rules = {
 }
 
 //初始化
-// 参数: Form Id、data、rules
-var mForm = validForm.init('test', data, rules);
+// 参数: @String:FormId, @Object:rules
+var mForm = validForm.init('test', rules);
 
 //提交
 mForm.validate(function(valid, data) {

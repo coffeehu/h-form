@@ -298,14 +298,6 @@ var validators = {
 
 
 /*----------------ValidForm 构造函数----------------------
-数据格式：
-var data = {
-  name: '',
-  pass: '',
-  checkPass: '',
-  age: ''
-}
-
 规则格式：
 var rules = {
   name: [
@@ -320,10 +312,10 @@ var rules = {
   {requried: true, xxx}
   {phone: true, xxx} 等
 */
-function ValidForm(id, data, rules) {
+function ValidForm(id, rules) {
 	this.el = document.getElementById('test');
 	this.fields = [];
-	this.data = data || null;
+	this.data = {};
 	this.rules = rules || null;
 	if(this.el) this.initFields();
 }
@@ -332,8 +324,10 @@ ValidForm.prototype.initFields = function() {
 	var _children = utils.children(this.el);
 	var formItemList = [];
 	for(var i=0,l=_children.length; i<l; i++) {
-		if( utils.hasClass(_children[i], 'h-form-item') && _children[i].getAttribute('prop') ) {
+		var prop = _children[i].getAttribute('prop');
+		if( utils.hasClass(_children[i], 'h-form-item') && prop ) {
 			formItemList.push(_children[i]);
+			this.data[prop] = ''; // 初始化 data，存储了所有的 prop
 		}
 	}
 	for(var i=0,l=formItemList.length; i<l; i++) {
@@ -618,11 +612,14 @@ ValidInput.prototype.off = function() {
 
 /*----------------对外接口----------------------*/
 var validForm = window.validForm = {
-	init: function(id, data, rules) {
-		var obj = new ValidForm(id, data, rules);
+	init: function(id, rules, data) {
+		var obj = new ValidForm(id, rules, data);
 		for(var prop in obj.data) {
 			defineProp(obj, prop);
 		}
+
+		if(data && typeof data === 'object') obj.setValue(data);
+
 		return obj;
 	}
 };
