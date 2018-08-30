@@ -555,12 +555,17 @@ function ValidInput(inputList) {
 }
 ValidInput.prototype.getValue = function() {
 	if(this.type === 'checkbox') {
-		var valueArray = [];
-		for(var i=0,l=this.el.length; i<l; i++) {
-			if(this.el[i].checked) valueArray.push(this.el[i].value);
+		if(this.el.length === 1) { //为 Switch，返回的 value 为 Boolean
+			if(this.el[0].checked) return true;
+			return false;
+		}else if(this.el.length > 1) { //为 Checkbox 集合，返回的 value 为 Array
+			var valueArray = [];
+			for(var i=0,l=this.el.length; i<l; i++) {
+				if(this.el[i].checked) valueArray.push(this.el[i].value);
+			}
+			if(valueArray.length === 0) return '';
+			return valueArray;
 		}
-		if(valueArray.length === 0) return '';
-		return valueArray;
 	}
 	else if(this.type === 'radio') {
 		for(var i=0,l=this.el.length; i<l; i++) {
@@ -574,12 +579,16 @@ ValidInput.prototype.getValue = function() {
 }
 ValidInput.prototype.setValue = function(value) {
 	if(this.type === 'checkbox') {
-		for(var i=0,l=this.el.length; i<l; i++) {
-			if(this.el[i].checked) {
-				this.el[i].checked = false;
-			}
-			for(var j=0; j<value.length; j++) {
-				if(this.el[i].value === value[j]) this.el[i].checked = true;
+		if(this.el.length === 1) { //为 Switch, value 为 Boolean
+			this.el[0].checked = !!value;
+		}else if(this.el.length > 1) { //为 Checkbox 集合
+			for(var i=0,l=this.el.length; i<l; i++) {
+				if(this.el[i].checked) {
+					this.el[i].checked = false;
+				}
+				for(var j=0; j<value.length; j++) {
+					if(this.el[i].value === value[j]) this.el[i].checked = true;
+				}
 			}
 		}
 	}

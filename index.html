@@ -85,23 +85,33 @@
           </div>
         </div>
 
+        <div class="h-form-item" prop="study">
+          <label class="h-form-item--label">学习</label>
+          <div class="h-form-item--content">
+            <label class="h-switch">
+              <input class="h-switch--input" type="checkbox">
+              <span class="h-switch--inner"></span>
+            </label>
+          </div>
+        </div>
+
         <div class="h-form-item" prop="hobby">
           <label class="h-form-item--label">喜好</label>
           <div class="h-form-item--content">
             <div class="h-checkbox-group">
               <label class="h-checkbox">
-                <input type="checkbox" value="male" class="h-checkbox--originput">
-                <span class="h-checkbox--input"></span>
+                <input type="checkbox" value="male" class="h-checkbox--input">
+                <span class="h-checkbox--inner"></span>
                 <span class="h-checkbox--label">男</span>
               </label>
               <label class="h-checkbox">
-                <input type="checkbox" value="female" class="h-checkbox--originput">
-                <span class="h-checkbox--input"></span>
+                <input type="checkbox" value="female" class="h-checkbox--input">
+                <span class="h-checkbox--inner"></span>
                 <span class="h-checkbox--label">女</span>
               </label>
               <label class="h-checkbox">
-                <input type="checkbox" value="bitch" class="h-checkbox--originput">
-                <span class="h-checkbox--input"></span>
+                <input type="checkbox" value="bitch" class="h-checkbox--input">
+                <span class="h-checkbox--inner"></span>
                 <span class="h-checkbox--label">妖</span>
               </label>
             </div>
@@ -113,13 +123,13 @@
           <div class="h-form-item--content">
             <div class="h-checkbox-group">
               <label class="h-checkbox">
-                <input type="radio" name="sex" value="male" class="h-radio--originput">
-                <span class="h-radio--input"></span>
+                <input type="radio" name="sex" value="male" class="h-radio--input">
+                <span class="h-radio--inner"></span>
                 <span class="h-radio--label">男</span>
               </label>
               <label class="h-checkbox">
-                <input type="radio" name="sex" value="female" class="h-radio--originput">
-                <span class="h-radio--input"></span>
+                <input type="radio" name="sex" value="female" class="h-radio--input">
+                <span class="h-radio--inner"></span>
                 <span class="h-radio--label">女</span>
               </label>
             </div>
@@ -166,7 +176,8 @@
     pass: '',
     repass: '',
     hobby: '',
-    sex: ''
+    sex: '',
+    study: ''
   }
   var rules = {
     email: [
@@ -265,6 +276,7 @@
       repass: '123',
       sex : 'female',
       hobby : ['bitch', 'female'],
+      study: true
     }
     mForm.setValue(data);
   }
