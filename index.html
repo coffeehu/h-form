@@ -4,6 +4,23 @@
 	<title></title>
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="./h-form.css">
+  <style type="text/css">
+    .tmp {
+      width: 70%;
+      margin: 50px auto;
+    }
+    [class*=col-] {
+      float: left;
+      box-sizing: border-box;
+    }
+    
+    .col-11 {
+      width: 45.83333%;
+    }
+    .col-2 {
+      width: 8.33333%;
+    }
+  </style>
 
   <!-- 一个下拉框插件，演示用 -->
   <link rel="stylesheet" type="text/css" href="./lib/hselector/hselector.css">
@@ -17,7 +34,7 @@
           <label class="h-form-item--label">邮箱</label>
           <div class="h-form-item--content">
             <div class="h-input">
-              <input class="h-input--inner" type="" name="">
+              <input class="h-input--inner" type="text">
             </div>
           </div>
         </div>
@@ -25,8 +42,19 @@
         <div class="h-form-item" prop="phone">
           <label class="h-form-item--label">手机</label>
           <div class="h-form-item--content">
-            <div class="h-input">
-              <input class="h-input--inner" type="" name="">
+            <input class="h-input--inner" type="text">
+          </div>
+        </div>
+
+        <div class="h-form-item" prop="range">
+          <label class="h-form-item--label">范围</label>
+          <div class="h-form-item--content">
+            <div class="col-11">
+              <input class="h-input--inner" type="text">
+            </div>
+            <div class="col-2" style="text-align: center;">-</div>
+            <div class="col-11">
+              <input class="h-input--inner" type="text">
             </div>
           </div>
         </div>
@@ -34,8 +62,27 @@
         <div class="h-form-item" prop="name">
           <label class="h-form-item--label">用户名</label>
           <div class="h-form-item--content">
-            <div class="h-input">
-              <input class="h-input--inner" type="" name="">
+            <input class="h-input--inner" type="text">
+          </div>
+        </div>
+
+        <div class="h-form-item">
+          <label class="h-form-item--label">活动时间</label>
+          <div class="h-form-item--content">
+            <div class="col-11">
+              <div class="h-form-item" prop="activeDate">
+                <div class="h-form-item--content" style="margin: 0">
+                  <input class="h-input--inner" placeholder="内嵌的 form-item">
+                </div>
+              </div>
+            </div>
+            <div class="col-2" style="text-align: center;">-</div>
+            <div class="col-11">
+              <div class="h-form-item" prop="activeTime">
+                <div class="h-form-item--content" style="margin: 0">
+                  <input class="h-input--inner" placeholder="内嵌的 form-item">
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -43,9 +90,7 @@
         <div class="h-form-item" prop="pass">
           <label class="h-form-item--label">密码</label>
           <div class="h-form-item--content">
-            <div class="h-input">
-              <input class="h-input--inner" type="">
-            </div>
+            <input class="h-input--inner" type="text">
           </div>
         </div>
 
@@ -53,7 +98,7 @@
           <label class="h-form-item--label">确认密码</label>
           <div class="h-form-item--content">
             <div class="h-input">
-              <input class="h-input--inner" type="">
+              <input class="h-input--inner" type="text">
             </div>
           </div>
         </div>
@@ -61,18 +106,14 @@
         <div class="h-form-item" prop="cardtype">
           <label class="h-form-item--label">证件类型</label>
           <div class="h-form-item--content">
-            <div class="h-input">
-              <input class="h-input--inner" id="m-selector2" readonly="readonly" type="" name="">
-            </div>
+            <input class="h-input--inner" id="m-selector2" readonly="readonly" type="text">
           </div>
         </div>
 
         <div class="h-form-item" prop="identity">
           <label class="h-form-item--label">证件号码</label>
           <div class="h-form-item--content">
-            <div class="h-input">
-              <input class="h-input--inner" type="" placeholder="请输入 'sfz' 或 'passport' 或 'hk' 用于测试">
-            </div>
+            <input class="h-input--inner" type="text" placeholder="请输入 'sfz' 或 'passport' 或 'hk' 用于测试">
           </div>
         </div>
 
@@ -158,6 +199,14 @@
     }
     return false;
   }
+  var checkNumber = function(value) {
+    var reg = /^[0-9]*$/;
+    var valid = true;
+    for(var i=0; i<value.length; i++) {
+      valid = valid && reg.test(value[i]);
+    }
+    return valid;
+  }
 
   //表单验证规则
   var rules = {
@@ -184,6 +233,17 @@
     ],
     sex: [
       { required: true, message: '请选择性别'}
+    ],
+    activeDate: [
+      { required: true, message: '请选择活动日期'}
+    ],
+    activeTime: [
+      { required: true, message: '请选择活动时间'}
+    ],
+    range: [
+      { required: true, message: '请选择范围'},
+      /*range 为多个 input 的结构，因此值为数组，所以需要自定义验证函数*/
+      { validator: checkNumber, message: '范围值必须为数字'}
     ]
   }
 
@@ -243,8 +303,11 @@
       name : 'test',
       pass : '123',
       repass: '123',
+      activeDate: '2018-08-30',
+      activeTime: '17:30',
       sex : 'female',
       hobby : ['bitch', 'female'],
+      range : ['1', '10'],
       study: true
     }
     mForm.setValue(data);

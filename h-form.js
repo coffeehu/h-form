@@ -181,6 +181,10 @@ var validators = {
 		}
 		return true;
 	},
+	number: function(value) {
+		var reg = /^[0-9]*$/;
+		return reg.test(value);
+	},
 	email: function(value) { //邮箱
 		var reg = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
   		return reg.test(value);
@@ -313,43 +317,58 @@ var rules = {
   {phone: true, xxx} 等
 */
 function ValidForm(id, rules) {
-	this.el = document.getElementById('test');
-	this.fields = [];
-	this.data = {};
-	this.rules = rules || null;
-	if(this.el) this.initFields();
+	this.$el = document.getElementById('test');
+	this.$fields = [];
+	this.$data = {};
+	this.$rules = rules || null;
+	if(this.$el) this.initFields();
 }
 
 ValidForm.prototype.initFields = function() {
-	var _children = utils.children(this.el);
+	var _children = utils.children(this.$el);
 	var formItemList = [];
 	for(var i=0,l=_children.length; i<l; i++) {
 		var prop = _children[i].getAttribute('prop');
-		if( utils.hasClass(_children[i], 'h-form-item') && prop ) {
-			formItemList.push(_children[i]);
-			this.data[prop] = ''; // 初始化 data，存储了所有的 prop
+		if(!prop) { //考虑到有内嵌 h-form-item 的情况（仅内嵌一层）
+			var nestedItemList = _children[i].getElementsByClassName('h-form-item');
+			for(var j=0; j<nestedItemList.length; j++) {
+				var item = {
+					el: nestedItemList[j],
+					parentItem: _children[i]
+				}
+				formItemList.push(item);
+				var nestedProp = nestedItemList[j].getAttribute('prop');
+				if(nestedProp) this.$data[nestedProp] = ''; // 初始化 data，存储了所有的 prop
+			}
+		}else if(utils.hasClass(_children[i], 'h-form-item')) { //常规情况
+			var item = {
+				el: _children[i],
+				parentItem: null
+			}
+			formItemList.push(item);
+			this.$data[prop] = ''; // 初始化 data，存储了所有的 prop
 		}
 	}
 	for(var i=0,l=formItemList.length; i<l; i++) {
-		this.fields.push( new FormItem(formItemList[i], this) );
+		this.$fields.push( new FormItem(formItemList[i].el, this, formItemList[i].parentItem) );
 	}
 }
 
 ValidForm.prototype.validate = function(callback) {
 	var valid = true;
-	for(var i=0,l=this.fields.length; i<l; i++) {
-		var _v = this.fields[i].validate('');
-		this.data[this.fields[i].prop] = this.fields[i].getFieldValue();
+	for(var i=0,l=this.$fields.length; i<l; i++) {
+		var _v = this.$fields[i].validate('');
+		this.$data[this.$fields[i].prop] = this.$fields[i].getFieldValue();
 		valid = valid && _v;
 	}
 	if(typeof callback === 'function') {
-		callback(valid, this.data);
+		callback(valid, this.$data);
 	}
 }
 
 ValidForm.prototype.reset = function() {
-	for(var i=0,l=this.fields.length; i<l; i++) {
-		this.fields[i].reset();
+	for(var i=0,l=this.$fields.length; i<l; i++) {
+		this.$fields[i].reset();
 	}
 }
 
@@ -360,12 +379,12 @@ ValidForm.prototype.setValue = function(data) {
 }
 
 /*----------------FormItem 构造函数----------------------*/
-function FormItem(el, form) {
+function FormItem(el, form, parentItem) {
 	this.el = el;
 	this.form = form;
-	if(!form.rules || form.rules.length === 0) return;
+	if(!form.$rules || form.$rules.length === 0) return;
 	this.prop = el.getAttribute('prop');
-	this.rule = form.rules[this.prop];
+	this.rule = form.$rules[this.prop];
 	this.content = this.el.getElementsByClassName('h-form-item--content')[0];
 	if(!this.content) return;
 	this.input = this.createInput(this.content.getElementsByTagName('input'));
@@ -373,6 +392,7 @@ function FormItem(el, form) {
 	this.fieldValue = this.getFieldValue();
 	this.resetFlag = false;
 
+	if(parentItem) this.parentItem = parentItem;
 	this.render();
 	this.bindInput();
 }
@@ -401,7 +421,11 @@ FormItem.prototype.render = function() {
 	}
 
 	if(required) {
-		utils.addClass(this.el, 'is-required');
+		if(this.parentItem) { //若是内嵌的 form-item
+			utils.addClass(this.parentItem, 'is-required');
+		}else {
+			utils.addClass(this.el, 'is-required');
+		}
 	}
 }
 
@@ -548,6 +572,7 @@ function ValidInput(inputList) {
 	this.currentEl = null;
 }
 ValidInput.prototype.getValue = function() {
+	//多选框情况
 	if(this.type === 'checkbox') {
 		if(this.el.length === 1) { //为 Switch，返回的 value 为 Boolean
 			if(this.el[0].checked) return true;
@@ -557,17 +582,26 @@ ValidInput.prototype.getValue = function() {
 			for(var i=0,l=this.el.length; i<l; i++) {
 				if(this.el[i].checked) valueArray.push(this.el[i].value);
 			}
-			if(valueArray.length === 0) return '';
-			return valueArray;
+			if(valueArray.length > 0) return valueArray;
 		}
 	}
+	//单选框情况
 	else if(this.type === 'radio') {
 		for(var i=0,l=this.el.length; i<l; i++) {
 			if(this.el[i].checked) return this.el[i].value;
 		}
 	}
+	//常规情况，只有一个普通 input
 	else if(this.el.length === 1) {
 		return this.el[0].value;
+	}
+	//有多个普通 input 时
+	else if(this.el.length > 1) {
+		var valueArray = [];
+		for(var i=0; i<this.el.length; i++) {
+			if(this.el[i].value !== '') valueArray.push(this.el[i].value);
+		}
+		if(valueArray.length === this.el.length) return valueArray;
 	}
 	return '';
 }
@@ -599,6 +633,11 @@ ValidInput.prototype.setValue = function(value) {
 	else if(this.el.length === 1) {
 		this.el[0].value = value;
 	}
+	else if(this.el.length > 1) {
+		for(var i=0; i<value.length; i++) {
+			this.el[i].value = value[i];
+		}
+	}
 }
 ValidInput.prototype.on = function(type, handler) {
 	for(var i=0,l=this.el.length; i<l; i++) {
@@ -614,7 +653,7 @@ ValidInput.prototype.off = function() {
 var validForm = window.validForm = {
 	init: function(id, rules, data) {
 		var obj = new ValidForm(id, rules, data);
-		for(var prop in obj.data) {
+		for(var prop in obj.$data) {
 			defineProp(obj, prop);
 		}
 
@@ -627,19 +666,19 @@ var validForm = window.validForm = {
 function defineProp(obj, prop) {
 	Object.defineProperty(obj, prop, {
 		get: function() {
-			for(var i=0,l=this.fields.length; i<l; i++) {
-				if(this.fields[i].prop === prop) {
-					return this.fields[i].getFieldValue();
+			for(var i=0,l=this.$fields.length; i<l; i++) {
+				if(this.$fields[i].prop === prop) {
+					return this.$fields[i].getFieldValue();
 				}
 			}
 			return '';
 		},
 
 		set: function(value) {
-			for(var i=0,l=this.fields.length; i<l; i++) {
-				if(this.fields[i].prop === prop) {
-					//this.fields[i].reset(); //赋值前先重置
-					this.fields[i].setFieldValue(value);
+			for(var i=0,l=this.$fields.length; i<l; i++) {
+				if(this.$fields[i].prop === prop) {
+					//this.$fields[i].reset(); //赋值前先重置
+					this.$fields[i].setFieldValue(value);
 				}
 			}
 		}
