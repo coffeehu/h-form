@@ -634,8 +634,12 @@ ValidInput.prototype.setValue = function(value) {
 		this.el[0].value = value;
 	}
 	else if(this.el.length > 1) {
-		for(var i=0; i<value.length; i++) {
-			this.el[i].value = value[i];
+		var valueQuene = value;
+		if(!value.length) {
+			valueQuene = [];
+		}
+		for(var i=0; i<this.el.length; i++) {
+			this.el[i].value = valueQuene[i] ? valueQuene[i] : '';
 		}
 	}
 }
