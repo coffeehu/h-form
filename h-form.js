@@ -387,7 +387,7 @@ function FormItem(el, form, parentItem) {
 	this.rule = form.$rules[this.prop];
 	this.content = this.el.getElementsByClassName('h-form-item--content')[0];
 	if(!this.content) return;
-	this.input = this.createInput(this.content.getElementsByTagName('input'));
+	this.input = this.createInput(this.content);
 	if(!this.input) return;
 	this.fieldValue = this.getFieldValue();
 	this.resetFlag = false;
@@ -397,7 +397,13 @@ function FormItem(el, form, parentItem) {
 	this.bindInput();
 }
 
-FormItem.prototype.createInput = function(inputList) {
+FormItem.prototype.createInput = function(contentEl) {
+	var inputList = [];
+	var formElments = ['input', 'textarea'];
+	for(var i=0; i<formElments.length; i++) {
+		inputList = this.content.getElementsByTagName(formElments[i]);
+		if(inputList.length > 0) break;
+	}
 	return new ValidInput(inputList);
 }
 
@@ -591,6 +597,10 @@ ValidInput.prototype.getValue = function() {
 			if(this.el[i].checked) return this.el[i].value;
 		}
 	}
+	// textarea 情况
+	else if(this.type === 'textarea') {
+		return this.el[0].value;
+	}
 	//常规情况，只有一个普通 input
 	else if(this.el.length === 1) {
 		return this.el[0].value;
@@ -629,6 +639,9 @@ ValidInput.prototype.setValue = function(value) {
 				if(this.el[i].value === value) this.el[i].checked = true;
 			}
 		}
+	}
+	else if(this.type === 'textarea') {
+		this.el[0].value = value;
 	}
 	else if(this.el.length === 1) {
 		this.el[0].value = value;

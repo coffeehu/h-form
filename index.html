@@ -9,6 +9,7 @@
       width: 70%;
       max-width: 700px;
       margin: 50px auto;
+      margin-bottom: 100px;
     }
     [class*=col-] {
       float: left;
@@ -168,6 +169,15 @@
           </div>
         </div>
 
+        <div class="h-form-item" prop="comment">
+          <label class="h-form-item--label">评论</label>
+          <div class="h-form-item--content">
+            <div class="h-textarea">
+              <textarea class="h-textarea--inner"></textarea>
+            </div>
+          </div>
+        </div>
+
         <div class="h-form-item">
           <div class="h-form-item--content">
             <button type="button" class="h-button h-button-primary" id="submit">提交</button>
@@ -308,7 +318,8 @@
       sex : 'female',
       hobby : ['bitch', 'female'],
       range : ['1', '10'],
-      study: true
+      study: true,
+      comment: '这系统真烂！'
     }
     mForm.setValue(data);
   }
