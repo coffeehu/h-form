@@ -658,11 +658,16 @@ ValidInput.prototype.setValue = function(value) {
 		this.el[0].value = value;
 	}
 	else if(this.type === 'select-one') {
-		this.el[0].value = value; //TODO: 这种方法 IE9 下有兼容问题
+		//this.el[0].value = value; //TODO: 这种方法 IE9 下有兼容问题
+		var options = this.el[0].options;
+		for(var i=0; i<options.length; i++) {
+			var option = options[i];
+			if(option.value === value) option.selected = true;
+		}
 	}
 	else if(this.type === 'select-multiple') {
 		var options = this.el[0].options;
-		for(var i=0; i<options.length; i++) {			
+		for(var i=0; i<options.length; i++) {
 			var option = options[i];
 			var isSelected = false;
 			for(var j=0; j<value.length; j++) {
