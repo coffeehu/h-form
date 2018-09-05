@@ -399,7 +399,7 @@ function FormItem(el, form, parentItem) {
 
 FormItem.prototype.createInput = function(contentEl) {
 	var inputList = [];
-	var formElments = ['input', 'textarea'];
+	var formElments = ['input', 'textarea', 'select'];
 	for(var i=0; i<formElments.length; i++) {
 		inputList = this.content.getElementsByTagName(formElments[i]);
 		if(inputList.length > 0) break;
@@ -601,6 +601,20 @@ ValidInput.prototype.getValue = function() {
 	else if(this.type === 'textarea') {
 		return this.el[0].value;
 	}
+	// select 元素
+	else if(this.type === 'select-one') {
+		return this.el[0].value;
+	}
+	// select 元素，且设置了属性 multiple="multiple"，即为多选
+	else if(this.type === 'select-multiple') {
+		var values = [];
+		var options = this.el[0].options;
+		for(var i=0; i<options.length; i++) {
+			var option = options[i];
+			if(option.selected) values.push(option.value);
+		}
+		return values.length > 0 ? values : '';
+	}
 	//常规情况，只有一个普通 input
 	else if(this.el.length === 1) {
 		return this.el[0].value;
@@ -642,6 +656,20 @@ ValidInput.prototype.setValue = function(value) {
 	}
 	else if(this.type === 'textarea') {
 		this.el[0].value = value;
+	}
+	else if(this.type === 'select-one') {
+		this.el[0].value = value; //TODO: 这种方法 IE9 下有兼容问题
+	}
+	else if(this.type === 'select-multiple') {
+		var options = this.el[0].options;
+		for(var i=0; i<options.length; i++) {			
+			var option = options[i];
+			var isSelected = false;
+			for(var j=0; j<value.length; j++) {
+				if(option.value === value[j]) isSelected = true;
+			}
+			option.selected = isSelected;
+		}
 	}
 	else if(this.el.length === 1) {
 		this.el[0].value = value;

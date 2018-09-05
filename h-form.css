@@ -48,7 +48,8 @@
   font-size: 14px;
 }
 .h-input--inner,
-.h-textarea--inner {
+.h-textarea--inner,
+.h-select--inner {
   display: inline-block;
   height: 40px;
   line-height: 40px;

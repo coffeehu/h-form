@@ -169,6 +169,29 @@
           </div>
         </div>
 
+        <div class="h-form-item" prop="activity">
+          <label class="h-form-item--label">活动</label>
+          <div class="h-form-item--content">
+            <select>
+              <option></option>
+              <option>睡觉</option>
+              <option>看电影</option>
+              <option>吃饭</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="h-form-item" prop="eat">
+          <label class="h-form-item--label">吃饭</label>
+          <div class="h-form-item--content">
+            <select multiple="multiple" id="mselect">
+              <option>牛排</option>
+              <option>火锅</option>
+              <option>拉面</option>
+            </select>
+          </div>
+        </div>
+
         <div class="h-form-item" prop="comment">
           <label class="h-form-item--label">评论</label>
           <div class="h-form-item--content">
@@ -254,6 +277,12 @@
       { required: true, message: '请选择范围'},
       /*range 为多个 input 的结构，因此值为数组，所以需要自定义验证函数*/
       { validator: checkNumber, message: '范围值必须为数字'}
+    ],
+    activity: [
+      { required: true, message: '请选择活动'}
+    ],
+    eat: [
+      { required: true, message: '请选择吃的'}
     ]
   }
 
@@ -319,10 +348,13 @@
       hobby : ['bitch', 'female'],
       range : ['1', '10'],
       study: true,
+      activity: '睡觉',
+      eat: ['牛排', '拉面'],
       comment: '这系统真烂！'
     }
     mForm.setValue(data);
   }
+
 
 
 </script>
