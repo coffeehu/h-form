@@ -169,29 +169,6 @@
           </div>
         </div>
 
-        <div class="h-form-item" prop="activity">
-          <label class="h-form-item--label">活动</label>
-          <div class="h-form-item--content">
-            <select>
-              <option></option>
-              <option>睡觉</option>
-              <option>看电影</option>
-              <option>吃饭</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="h-form-item" prop="eat">
-          <label class="h-form-item--label">吃饭</label>
-          <div class="h-form-item--content">
-            <select multiple="multiple" id="mselect">
-              <option>牛排</option>
-              <option>火锅</option>
-              <option>拉面</option>
-            </select>
-          </div>
-        </div>
-
         <div class="h-form-item" prop="comment">
           <label class="h-form-item--label">评论</label>
           <div class="h-form-item--content">
@@ -206,6 +183,83 @@
             <button type="button" class="h-button h-button-primary" id="submit">提交</button>
             <button type="button" class="h-button" id="reset">重置</button>
             <button type="button" class="h-button" id="setvalue">赋值</button>
+          </div>
+        </div>
+      </form>
+
+
+      <hr style="margin: 30px 0" />
+
+      <h2>去掉样式的表单元素</h2>
+
+      <form class="h-form" id="test2">
+        <div class="h-form-item" prop="name">
+          <label class="h-form-item--label">名称</label>
+          <div class="h-form-item--content">
+            <input type="text">
+          </div>
+        </div>
+
+        <div class="h-form-item" prop="price">
+          <label class="h-form-item--label">价格</label>
+          <div class="h-form-item--content">
+            <input type="text">
+          </div>
+        </div>
+
+        <div class="h-form-item" prop="noodle">
+          <label class="h-form-item--label">面条</label>
+          <div class="h-form-item--content">
+            <label>软</label><input type="radio" name="noodle" value="soft">
+            <label>适中</label><input type="radio" name="noodle" value="middle">
+            <label>硬</label><input type="radio" name="noodle" value="hard">
+          </div>
+        </div>
+
+        <div class="h-form-item" prop="soup">
+          <label class="h-form-item--label">汤底</label>
+          <div class="h-form-item--content">
+            <select>
+              <option>豚骨</option>
+              <option>鸡骨</option>
+              <option>酱油</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="h-form-item" prop="side">
+          <label class="h-form-item--label">配菜</label>
+          <div class="h-form-item--content">
+            <label>溏心蛋</label><input type="checkbox" value="egg">
+            <label>海苔</label><input type="checkbox" value="ht">
+            <label>葱</label><input type="checkbox" value="c">
+            <label>叉烧</label><input type="checkbox" value="cs">
+          </div>
+        </div>
+
+        <div class="h-form-item" prop="taste">
+          <label class="h-form-item--label">调料</label>
+          <div class="h-form-item--content">
+            <select multiple="multiple">
+              <option>加辣</option>
+              <option>加油</option>
+              <option>胡椒</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="h-form-item" prop="remark">
+          <label class="h-form-item--label">备注</label>
+          <div class="h-form-item--content">
+            <textarea></textarea>
+          </div>
+        </div>
+
+        <div class="h-form-item">
+          <div class="h-form-item--content">
+            <button type="button" id="submit2">提交</button>
+            <button type="button" id="reset2">重置</button>
+            <button type="button" id="setvalue2">赋值</button>
           </div>
         </div>
       </form>
@@ -277,12 +331,6 @@
       { required: true, message: '请选择范围'},
       /*range 为多个 input 的结构，因此值为数组，所以需要自定义验证函数*/
       { validator: checkNumber, message: '范围值必须为数字'}
-    ],
-    activity: [
-      { required: true, message: '请选择活动'}
-    ],
-    eat: [
-      { required: true, message: '请选择吃的'}
     ]
   }
 
@@ -348,11 +396,69 @@
       hobby : ['bitch', 'female'],
       range : ['1', '10'],
       study: true,
-      activity: '睡觉',
-      eat: ['牛排', '拉面'],
       comment: '这系统真烂！'
     }
     mForm.setValue(data);
+  }
+
+
+
+
+  /*----------初始化表单2------------*/
+    var rules2 = {
+      name: [
+        { required: true, message: '请输入名称' }
+      ],
+      price: [
+        { required: true, message: '请输入价格' },
+        { number: true, message: '请输入数字', trigger: 'input' },
+      ],
+      noodle: [
+        { required: true, message: '请选择面的硬度' },
+      ],
+      soup: [
+        { required: true, message: '请选择汤底' },
+      ],
+      side: [
+        { required: true, message: '请选择配菜' },
+      ],
+      taste: [
+        { required: true, message: '请选择配料' },
+      ]
+    }
+
+  var mForm2 = validForm.init('test2', rules2);
+
+  var submit2 = document.getElementById('submit2');
+  var reset2 = document.getElementById('reset2');
+  var setvalue2 = document.getElementById('setvalue2');
+
+  submit2.onclick = function() {
+    mForm2.validate(function(valid, data) {
+      if(valid) {
+        alert('submit success!');
+        console.log(data);
+      }else {
+        console.log('submit error');
+      }
+    })
+  }
+
+  reset2.onclick = function() {
+    mForm2.reset();
+  }
+
+  setvalue2.onclick = function() {
+    var data = {
+      name: '经典豚骨拉面',
+      price: '55',
+      noodle: 'middle',
+      soup: '豚骨',
+      side: ['cs','egg'],
+      taste: ['加辣','胡椒'],
+      remark: '少放点肉'
+    }
+    mForm2.setValue(data);
   }
 
 

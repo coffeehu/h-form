@@ -317,7 +317,7 @@ var rules = {
   {phone: true, xxx} 等
 */
 function ValidForm(id, rules) {
-	this.$el = document.getElementById('test');
+	this.$el = document.getElementById(id);
 	this.$fields = [];
 	this.$data = {};
 	this.$rules = rules || null;
